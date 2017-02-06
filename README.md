@@ -1,0 +1,1 @@
+# woocommerce-force-subscription
