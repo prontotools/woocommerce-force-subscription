@@ -28,6 +28,7 @@ if ( ! class_exists( 'WC_force_Subscribe' ) && ! class_exists( 'WC_Subscriptions
 		 */
 		public function __construct() {
 			add_action( 'woocommerce_add_to_cart', array( $this, 'force_add_subscription' ), 11, 6 );
+			add_action( 'woocommerce_cart_item_remove_link', array( $this, 'filter_woocommerce_cart_item_remove_link' ), 10, 2 );
 		}
 
 		public function force_add_subscription( $cart_item_key, $product_id, $quantity, $variation_id, $variation, $cart_item_data ) {
@@ -52,6 +53,14 @@ if ( ! class_exists( 'WC_force_Subscribe' ) && ! class_exists( 'WC_Subscriptions
 			}
 		}
 
+		public function filter_woocommerce_cart_item_remove_link( $sprintf, $cart_item_key ) {
+			$force_subscription_product_id = get_option( self::$option_prefix . '_product' );
+			$search_text = 'data-product_id="' . $force_subscription_product_id . '"';
+			if ( strpos($sprintf, $search_text) !== false ) {
+				return '';
+			}
+			return $sprintf;
+		}
 	}
 
 	return new WC_force_Subscribe();
